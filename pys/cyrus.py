@@ -90,7 +90,7 @@ if os.path.isdir(BIN_PATH):
 
     for prog in V.programs:
         if not shutil.which(prog):
-            sys.exit(f"[x] Not found: {prog}\n[i] Please install {prog} \n   Or add <{prog}> to {BIN_PATH}")
+            sys.exit(f"[x] Не найден: {prog}\n[i] Пожалуйста, установите {prog} \n   Или добавьте <{prog}> в {BIN_PATH}")
 else:
     print(f"Run err on: {platform.system()} {platform.machine()}")
     sys.exit()
@@ -271,7 +271,7 @@ def env_setup():
         'Размер супер образа[9126805504]': "SUPER_SIZE",
         'Размер сектора супер образа[2048]': "SUPER_SECTOR",
         'Пользовательская временная метка UTC [в реальном времени]': "UTC",
-        'Разобрать DAT/IMG, который нарезан на части[15]': "UNPACK_SPLIT_DAT"}
+        'Разобрать DAT/IMG, который нарезан на  множество частей[15]': "UNPACK_SPLIT_DAT"}
     while True:
         os.system('cls' if os.name == 'nt' else "clear")
         print(f"\n> {GREEN}Файл с настройками{CLOSE}: {SETUP_JSON.replace(PWD_DIR, '')}")
@@ -283,7 +283,7 @@ def env_setup():
             print(f"{YELLOW}[{'0' if i < 10 else ''}{i}]{CLOSE}\t{BOLD}{name}{CLOSE}: {GREEN}{data[value]}{CLOSE}")
             data1[str(i)] = name
             i += 1
-        sum_ = input(f"\nПожалуйста, выберите действие{YELLOW}00{CLOSE}Вернуться назад：")
+        sum_ = input(f"\nПожалуйста, сделайте выбор, {YELLOW}00{CLOSE}вернуться назад：")
         if sum_ in ["00", "0"]:
             return
         if sum_ not in data1.keys():
@@ -1275,7 +1275,7 @@ def lists_project(dTitle, sPath, flag):
 
     print("\n-------------------------------------------------------")
     if flag == 0:
-        print("\x1b[0;35m  [33] - Разобрать      [44] - Удалить\n  [77] - Установить      [66] - Скачать\n  [88] - Выйти  \x1b[0m\n")
+        print("\x1b[0;35m  [33] - Разобрать      [44] - Удалить\n  [77] - Настройки программы      [66] - Скачать\n  [88] - Выйти  \x1b[0m\n")
 
     if flag == 2:
         print("\x1b[0;35m  [33] - Установить        [44] - Удалить         [88] - Выйти  \x1b[0m\n")
