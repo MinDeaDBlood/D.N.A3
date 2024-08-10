@@ -256,25 +256,25 @@ def validate_default_env_setup(setup_manifest):
 
 def env_setup():
     question_list = {
-        '安卓版本[12]': "ANDROID_SDK",
-        '机型代号[alioth]': "DEVICE_CODE",
-        '是否动态分区[1/0]': "IS_DYNAMIC",
-        '是否虚拟AB分区[1/0]': "IS_VAB",
-        '合成镜像类型[0:EXT4/1:EROFS]': "REPACK_EROFS_IMG",
-        '合成镜像格式[0:RAW/1:SPARSE]': "REPACK_SPARSE_IMG",
-        '合成SUPER镜像格式[1:SPARSE/0:RAW]': "SUPER_SPARSE",
-        '合成EXT4动态分区状态[0:RO/1:RW]': "REPACK_TO_RW",
-        '合成EXT4压缩分区空间[0/1]': "RESIZE_IMG",
-        '合成EROFS压缩算法[0:NO/1:LZ4HC/2:LZ4]': "RESIZE_EROFSIMG",
-        '压缩BROTLI等级[0-9|3]': "REPACK_BR_LEVEL",
-        '动态分区簇名称[qti_dynamic_partitions]': "GROUP_NAME",
-        '动态SUPER分区总大小[9126805504]': "SUPER_SIZE",
-        '动态分区扇区大小[2048]': "SUPER_SECTOR",
-        '自定义UTC时间戳[live]': "UTC",
-        '分段DAT/IMG支持个数[15]': "UNPACK_SPLIT_DAT"}
+        'Версия Android[12]': "ANDROID_SDK",
+        'Кодовое название модели[alioth]': "DEVICE_CODE",
+        'Разобрать супер образ[1/0]': "IS_DYNAMIC",
+        'Использовать ли виртуальный тип раздела AB[1/0]': "IS_VAB",
+        'Тип собираемого образа[0:EXT4/1:EROFS]': "REPACK_EROFS_IMG",
+        'Формат собираемого образа[0:RAW/1:SPARSE]': "REPACK_SPARSE_IMG",
+        'Формат супер образа[1:SPARSE/0:RAW]': "SUPER_SPARSE",
+        'Выберите права, с которыми будет собран образ EXT4[0:RO/1:RW]': "REPACK_TO_RW",
+        'Изменить размер образа EXT4[0/1]': "RESIZE_IMG",
+        'Выберите способ сжатия EROFS[0:NO/1:LZ4HC/2:LZ4]': "RESIZE_EROFSIMG",
+        'Уровень сжатия Бротли[0-9|3]': "REPACK_BR_LEVEL",
+        'Название группы динамических разделов[qti_dynamic_partitions]': "GROUP_NAME",
+        'Размер супер образа[9126805504]': "SUPER_SIZE",
+        'Размер сектора супер образа[2048]': "SUPER_SECTOR",
+        'Пользовательская временная метка UTC [в реальном времени]': "UTC",
+        'Разобрать DAT/IMG, который нарезан на части[15]': "UNPACK_SPLIT_DAT"}
     while True:
         os.system('cls' if os.name == 'nt' else "clear")
-        print(f"\n> {GREEN}设置文件{CLOSE}: {SETUP_JSON.replace(PWD_DIR, '')}")
+        print(f"\n> {GREEN}Файл с настройками{CLOSE}: {SETUP_JSON.replace(PWD_DIR, '')}")
         i = 1
         data1 = {}
         with open(SETUP_JSON, 'r', encoding='utf-8') as ss:
@@ -283,7 +283,7 @@ def env_setup():
             print(f"{YELLOW}[{'0' if i < 10 else ''}{i}]{CLOSE}\t{BOLD}{name}{CLOSE}: {GREEN}{data[value]}{CLOSE}")
             data1[str(i)] = name
             i += 1
-        sum_ = input(f"\n请输入你要更改的序列，输入{YELLOW}00{CLOSE}为返回：")
+        sum_ = input(f"\nПожалуйста, выберите действие{YELLOW}00{CLOSE}Вернуться назад：")
         if sum_ in ["00", "0"]:
             return
         if sum_ not in data1.keys():
@@ -311,7 +311,7 @@ def find_file(path, rule):
 
 def kill_avb():
     for tab in find_file(V.project, "^fstab.*?"):
-        print(f"> 解除AVB加密: {tab}")
+        print(f"> Отключение шифрования AVB: {tab}")
         with open(tab, "r") as sf:
             details = re.sub("avb.*?,", "", sf.read())
         details = re.sub(",avb,", ",", details)
@@ -322,7 +322,7 @@ def kill_avb():
 
 def kill_dm():
     for tab in find_file(V.project, "^fstab.*?"):
-        print(f"> 解除DM加密: {tab}")
+        print(f"> Отключение шифрования DM: {tab}")
         with open(tab, "r") as sf:
             details = re.sub("forceencrypt=", "encryptable=", sf.read())
         details = re.sub(",fileencryption=.*metadata_encryption", "", details)
@@ -368,7 +368,7 @@ def patch_twrp(BOOTIMG):
                     new_boot_img_name = f"{os.path.basename(BOOTIMG).split('.')[0]}{os.path.basename(V.out)}_twrp.img"
                     os.rename("new-boot.img", os.path.join(V.out, new_boot_img_name))
                     os.chdir(PWD_DIR)
-                    add_magisk = input("> 是否继续添加Magisk [1/0]: ")
+                    add_magisk = input("> Добавить рут? [1/0]: ")
                     if add_magisk == "1":
                         patch_magisk(f"{V.out}{os.path.basename(BOOTIMG).split('.')[0]}_twrp.img")
         os.chdir(PWD_DIR)
@@ -376,7 +376,7 @@ def patch_twrp(BOOTIMG):
             rmdire(f"{V.main_dir}bootimg")
     else:
         input(
-            f"> 未发现local/etc/devices/{V.SETUP_MANIFEST['DEVICE_CODE']}/{V.SETUP_MANIFEST['ANDROID_SDK']}/ramdisk.cpio文件")
+            f"> Не найден файл:local/etc/devices/{V.SETUP_MANIFEST['DEVICE_CODE']}/{V.SETUP_MANIFEST['ANDROID_SDK']}/ramdisk.cpio")
 
 
 def patch_magisk(bootimg):
@@ -406,7 +406,7 @@ def patch_magisk(bootimg):
         sys.exit("Invalid [TARGET] - must be one of <arm/x86>")
     magisk_files = glob(f"{PWD_DIR}local/etc/magisk/{magisk_manifest['CLASS']}/Magisk-*.apk")
     if not magisk_files:
-        input(f"> 未发现local/etc/magisk/{magisk_manifest['CLASS']}/Magisk-*.apk文件")
+        input(f"> Не найден файл:local/etc/magisk/{magisk_manifest['CLASS']}/Magisk-*.apk")
         return
     if os.path.isfile(bootimg):
         if os.path.isdir(f"{V.main_dir}bootimg"):
@@ -478,13 +478,13 @@ def patch_magisk(bootimg):
                     for file_to_delete in glob(file_pattern):
                         try:
                             os.remove(file_to_delete)
-                            print(f"Clean: {file_to_delete}")
+                            print(f"Удалить: {file_to_delete}")
                         except Exception as e:
-                            print(f"Error deleting {file_to_delete}: {e}")
+                            print(f"Ошибка удаления {file_to_delete}: {e}")
                 patch_kernel(bootimg)
 
                 if os.path.isfile("new-boot.img"):
-                    print("+ Done")
+                    print("+ Готово")
                     if not os.path.isdir(V.out):
                         os.mkdir(V.out)
                     new_boot_img_name = os.path.basename(bootimg).split(".")[0] + "_magisk.img"
@@ -513,21 +513,21 @@ def patch_magisk(bootimg):
 
 def patch_addons():
     if os.path.isdir(f"{PWD_DIR}local/etc/devices/default/{V.SETUP_MANIFEST['ANDROID_SDK']}/addons"):
-        display(f"复制 default/{V.SETUP_MANIFEST['ANDROID_SDK']}/* ...")
+        display(f"Копировать {V.SETUP_MANIFEST['ANDROID_SDK']}/* ...")
         try:
             shutil.copytree(os.path.join(PWD_DIR, "local", "etc", "devices", "default", V.SETUP_MANIFEST["ANDROID_SDK"],
                                          "addons"), V.main_dir, dirs_exist_ok=True)
         except Exception as e:
-            print("Error copying files:", e)
+            print("Ошибка при копировании файлов:", e)
     if os.path.isdir(
             f"{PWD_DIR}local/etc/devices/{V.SETUP_MANIFEST['DEVICE_CODE']}/{V.SETUP_MANIFEST['ANDROID_SDK']}/addons"):
-        display(f"复制 {V.SETUP_MANIFEST['DEVICE_CODE']}/{V.SETUP_MANIFEST['ANDROID_SDK']}/* ...")
+        display(f"Копировать {V.SETUP_MANIFEST['DEVICE_CODE']}/{V.SETUP_MANIFEST['ANDROID_SDK']}/* ...")
         source_dir = os.path.join(PWD_DIR, "local", "etc", "devices", V.SETUP_MANIFEST["DEVICE_CODE"],
                                   V.SETUP_MANIFEST["ANDROID_SDK"], "addons")
         try:
             shutil.copytree(source_dir, V.main_dir, dirs_exist_ok=True)
         except Exception as e:
-            print("Error copying files:", e)
+            print("Ошибка при копировании файлов:", e)
 
 
 def repack_super():
@@ -580,14 +580,14 @@ def repack_super():
                 image_size_b = imgextractor.ULTRAMAN().LEMON(img_b)
                 argvs += f'--partition {i}_a:readonly:{image_size_a}:{V.SETUP_MANIFEST["GROUP_NAME"]}_a --image {i}_a={img_a} --partition {i}_b:readonly:{image_size_b}:{V.SETUP_MANIFEST["GROUP_NAME"]}_b --image {i}_b={img_b} '
     if not parts or "--image" not in argvs:
-        input('> 未发现out文件夹下存在可用镜像文件')
+        input('> В папке out не обнаружено доступных образов.')
         return
     if V.SETUP_MANIFEST['SUPER_SPARSE'] == '1':
         argvs += '--sparse '
     argvs += f'--group {V.SETUP_MANIFEST["GROUP_NAME"]}_a:{V.SETUP_MANIFEST["SUPER_SIZE"]} --group {V.SETUP_MANIFEST["GROUP_NAME"]}_b:{V.SETUP_MANIFEST["SUPER_SIZE"]} --output {V.out + "super.img"} '
     display(
-        f'重新合成: super.img <Size:{V.SETUP_MANIFEST["SUPER_SIZE"]}|Vab:{V.SETUP_MANIFEST["IS_VAB"]}|Sparse:{V.SETUP_MANIFEST["SUPER_SPARSE"]}>')
-    display(f"包含分区：{'|'.join(parts)}")
+        f'Собрать: super.img <Size:{V.SETUP_MANIFEST["SUPER_SIZE"]}|Vab:{V.SETUP_MANIFEST["IS_VAB"]}|Sparse:{V.SETUP_MANIFEST["SUPER_SPARSE"]}>')
+    display(f"Содержит разделы：{'|'.join(parts)}")
     with CoastTime():
         call(argvs)
     try:
@@ -675,7 +675,7 @@ def recompress(source, fsconfig, contexts, dumpinfo, flag=8):
     elif V.SETUP_MANIFEST["RESIZE_EROFSIMG"] == "2":
         printinform += "|lz4"
     display(printinform)
-    display(f"重新合成: {label}.img ...", 4)
+    display(f"Собрать: {label}.img ...", 4)
 
     if V.SETUP_MANIFEST["REPACK_EROFS_IMG"] == "1":
         if call(mkerofs_cmd) != 0:
@@ -694,7 +694,7 @@ def recompress(source, fsconfig, contexts, dumpinfo, flag=8):
                 except:
                     ...
     if os.path.isfile(distance):
-        print(" Done")
+        print(" Готово")
         if resize2_rw and os.name == 'posix':
             os.system(f"e2fsck -E unshare_blocks {distance}")
             if dumpinfo:
@@ -742,7 +742,7 @@ def recompress(source, fsconfig, contexts, dumpinfo, flag=8):
                     f_w.write(line)
 
         if flag > 8 or (V.SETUP_MANIFEST["REPACK_SPARSE_IMG"] == "1"):
-            display("开始转换: sparse format ...")
+            display("Преобразовать: sparse ...")
             call(f"img2simg {distance} {distance.rsplit('.', 1)[0] + '_sparse.img'}")
             if os.path.exists(distance):
                 try:
@@ -754,25 +754,25 @@ def recompress(source, fsconfig, contexts, dumpinfo, flag=8):
                 try:
                     os.rename(source_file, distance)
                 except Exception as e:
-                    print("Error moving file:", e)
+                    print("Ошибка при перемещении файла:", e)
                 if flag > 8:
-                    display(f"重新生成: {label}.new.dat ...", 3)
+                    display(f"Собрать: {label}.new.dat ...", 3)
                     img2sdat.main(distance, V.out, 4, label)
                     newdat = V.out + label + ".new.dat"
                     if os.path.isfile(newdat):
-                        print(" Done")
+                        print(" Готово")
                         os.remove(distance)
                         if flag == 10:
                             level = V.SETUP_MANIFEST["REPACK_BR_LEVEL"]
-                            display(f"重新生成: {label}.new.dat.br | Level={level} ...", 3)
+                            display(f"Собрать: {label}.new.dat.br | Level={level} ...", 3)
                             newdat_brotli = newdat + ".br"
                             call(f"brotli -{level}jfo {newdat_brotli} {newdat}")
-                            print(f" {GREEN}打包成功{CLOSE}" if os.path.isfile(
-                                newdat_brotli) else f" {RED}打包失败{CLOSE}")
+                            print(f" {GREEN}Образ собран успешно{CLOSE}" if os.path.isfile(
+                                newdat_brotli) else f" {RED}Сборка образа завершилась неудачей{CLOSE}")
                     else:
-                        print(f" {RED}打包失败{CLOSE}")
+                        print(f" {RED}Сборка образа завершилась неудачей{CLOSE}")
     else:
-        print(f" {RED}打包失败{CLOSE}")
+        print(f" {RED}Сборка образа завершилась неудачей{CLOSE}")
 
 
 def rmdire(path):
@@ -789,9 +789,9 @@ def rmdire(path):
         try:
             shutil.rmtree(path)
         except PermissionError:
-            print("无法删除文件夹，权限不足")
+            print("Невозможно удалить папку, недостаточно прав")
         else:
-            print("删除成功！")
+            print("Удаление завершено!")
 
 
 def unpackboot(file, distance):
@@ -801,13 +801,13 @@ def unpackboot(file, distance):
     os.chdir(distance)
     shutil.copy(file, os.path.join(distance, "boot_o.img"))
     if call("magiskboot unpack -h %s" % file) != 0:
-        print("Unpack %s Fail..." % file)
+        print("Ошибка %s распаковки..." % file)
         os.chdir(or_dir)
         shutil.rmtree(distance)
         return
     if os.path.isfile(distance + os.sep + "ramdisk.cpio"):
         comp = gettype.gettype(distance + os.sep + "ramdisk.cpio")
-        print("Ramdisk is %s" % comp)
+        print("Ramdisk это %s" % comp)
         with open(distance + os.sep + "comp", "w") as f:
             f.write(comp)
         if comp != "unknow":
@@ -816,16 +816,16 @@ def unpackboot(file, distance):
             if call("magiskboot decompress %s %s" % (
                     distance + os.sep + "ramdisk.cpio.comp",
                     distance + os.sep + "ramdisk.cpio")) != 0:
-                print("Decompress Ramdisk Fail...")
+                print("Ошибка распаковки Ramdisk...")
                 return
         if not os.path.exists(distance + os.sep + "ramdisk"):
             os.mkdir(distance + os.sep + "ramdisk")
         os.chdir(distance)
-        print("Unpacking Ramdisk...")
+        print("Распаковка Ramdisk...")
         call('cpio -i -d -F ramdisk.cpio -D ramdisk')
         os.chdir(or_dir)
     else:
-        print("Unpack Done!")
+        print("Раскаковка завершена!")
     os.chdir(or_dir)
 
 
@@ -833,13 +833,13 @@ def dboot(infile, dist):
     or_dir = os.getcwd()
     flag = ''
     if not os.path.exists(infile):
-        print(f"Cannot Find {infile}...")
+        print(f"Не удается найти {infile}...")
         return
     if os.path.isdir(infile + os.sep + "ramdisk"):
         try:
             os.chdir(infile + os.sep + "ramdisk")
         except Exception as e:
-            print("Ramdisk Not Found.. %s" % e)
+            print("Не удается найти Ramdisk... %s" % e)
             return
         cpio = gettype.findfile("cpio.exe" if os.name != 'posix' else 'cpio',
                                 BIN_PATH).replace(
@@ -849,21 +849,21 @@ def dboot(infile, dist):
         os.chdir(infile)
         with open("comp", "r", encoding='utf-8') as compf:
             comp = compf.read()
-        print("Compressing:%s" % comp)
+        print("Сжатие:%s" % comp)
         if comp != "unknow":
             if call("magiskboot compress=%s ramdisk-new.cpio" % comp) != 0:
-                print("Pack Ramdisk Fail...")
+                print("Ошибка упаковки Ramdisk...")
                 os.remove("ramdisk-new.cpio")
                 return
             else:
-                print("Pack Ramdisk Successful..")
+                print("Упаковка Ramdisk успешно завершена...")
                 try:
                     os.remove("ramdisk.cpio")
                 except (Exception, BaseException):
                     ...
                 os.rename("ramdisk-new.cpio.%s" % comp.split('_')[0], "ramdisk.cpio")
         else:
-            print("Pack Ramdisk Successful..")
+            print("Упаковка Ramdisk успешно завершена...")
             os.remove("ramdisk.cpio")
             os.rename("ramdisk-new.cpio", "ramdisk.cpio")
         if comp == "cpio":
@@ -885,10 +885,10 @@ def boot_utils(source, distance, flag=1):
     if not os.path.isdir(distance):
         os.makedirs(distance)
     if flag == 1:
-        display(f"正在分解: {os.path.basename(source)}")
+        display(f"Разобрать: {os.path.basename(source)}")
         unpackboot(source, distance)
     elif flag == 2:
-        display(f"重新合成: {os.path.basename(source)}.img")
+        display(f"Собрать: {os.path.basename(source)}.img")
         dboot(source, distance)
 
 
@@ -907,7 +907,7 @@ def decompress_img(source, distance, keep=1):
         boot_info = V.config + os.path.basename(distance) + '_kernel.txt'
         open(boot_info, 'w', encoding='utf-8').close()
     elif file_type == 'sparse':
-        display(f'正在转换: Unsparse Format [{os.path.basename(source)}] ...')
+        display(f'Преобразование: в не sparse формат [{os.path.basename(source)}] ...')
         new_source = imgextractor.ULTRAMAN().APPLE(source)
         if os.path.isfile(new_source):
             if keep == 0:
@@ -915,11 +915,11 @@ def decompress_img(source, distance, keep=1):
             decompress_img(new_source, distance)
     if file_type in ['ext', 'erofs', 'super']:
         if file_type != 'ext':
-            display(f'正在分解: {os.path.basename(source)} <{file_type}>', 3)
+            display(f'Разобрать: {os.path.basename(source)} <{file_type}>', 3)
         if not os.path.isdir(V.config):
             os.makedirs(V.config)
         if file_type == 'ext':
-            with Console().status(f"[yellow]正在提取{os.path.basename(source)}[/]"):
+            with Console().status(f"[yellow]Распаковка{os.path.basename(source)}[/]"):
                 try:
                     imgextractor.ULTRAMAN().MONSTER(source, distance)
                 except:
@@ -933,7 +933,7 @@ def decompress_img(source, distance, keep=1):
                     try:
                         os.rename(source, source.replace('.unsparse', ''))
                     except Exception as e:
-                        print("Error moving file:", e)
+                        print("Ошибка при перемещении файла:", e)
                     source = source.replace('.unsparse', '')
                 call(f'extract.erofs -i {source.replace(os.sep, "/")} -o {V.main_dir} -x')
             elif file_type == 'super':
@@ -952,7 +952,7 @@ def decompress_img(source, distance, keep=1):
                             os.rename(img, new_source)
                         except:
                             ...
-                j = input('> 是否继续分解img [0/1]: ') == 1
+                j = input('> Разобрать img образ [0/1]: ') == 1
                 if j != 1:
                     return
                 for img in glob(V.input + '*.img'):
@@ -985,7 +985,7 @@ def decompress_img(source, distance, keep=1):
                             shutil.rmtree(V.main_dir + 'config')
 
         if os.path.isdir(distance):
-            print('\x1b[1;32m %ds Done\x1b[0m' % (time.time() - s_time))
+            print('\x1b[1;32m %ds Готово\x1b[0m' % (time.time() - s_time))
             if keep == 0:
                 if os.path.isfile(source):
                     os.remove(source)
@@ -993,14 +993,14 @@ def decompress_img(source, distance, keep=1):
                     os.remove(source.rsplit('.', 1)[0] + '.unsparse.img')
         else:
             if file_type != 'super':
-                echo('[red][Failed][/]')
+                echo('[red][Ошибка][/]')
 
 
 def decompress_dat(transfer, source, distance, keep=0):
     sTime = time.time()
     if os.path.isfile(source + ".1"):
         max__ = V.SETUP_MANIFEST["UNPACK_SPLIT_DAT"]
-        display(f"合并: {os.path.basename(source)}.1~{max__} ...")
+        display(f"Обьединить: {os.path.basename(source)}.1~{max__} ...")
         with open(source, "ab") as f:
             for i in range(1, int(max__)):
                 if os.path.exists("{}.{}".format(source, i)):
@@ -1011,7 +1011,7 @@ def decompress_dat(transfer, source, distance, keep=0):
                     except:
                         ...
 
-    display(f"正在分解: {os.path.basename(source)} ...", 3)
+    display(f"Разобрать: {os.path.basename(source)} ...", 3)
     sdat2img.main(transfer, source, distance)
     if os.path.isfile(distance):
         tTime = time.time() - sTime
@@ -1025,12 +1025,12 @@ def decompress_dat(transfer, source, distance, keep=0):
             os.remove(source)
         decompress_img(distance, V.main_dir + os.path.basename(distance).split(".")[0], 0)
     else:
-        print("\x1b[1;31m [Failed]\x1b[0m")
+        print("\x1b[1;31m [Ошибка]\x1b[0m")
 
 
 def decompress_bro(transfer, source, distance, keep=0):
     s_time = time.time()
-    display(f"正在分解: {os.path.basename(source)} ...", 3)
+    display(f"Разобрать: {os.path.basename(source)} ...", 3)
     call(f"brotli -df {source} -o {distance}")
     if os.path.isfile(distance):
         print("\x1b[1;32m [%ds]\x1b[0m" % (time.time() - s_time))
@@ -1047,18 +1047,18 @@ def decompress_bro(transfer, source, distance, keep=0):
 def decompress_bin(infile, outdir, flag='1'):
     os.system("cls" if os.name == "nt" else "clear")
     if flag == "1":
-        print(f"> {YELLOW}包含的所有镜像文件: {CLOSE}\n")
+        print(f"> {YELLOW}Разделы содержащиеся в образе: {CLOSE}\n")
         payload_partitions = extract_payload.info(infile).split()
         partitions = input(
-            f"> {RED}根据以上信息输入一个或多个镜像，以空格分开{CLOSE}\n> {MAGENTA}").split()
+            f"> {RED}Введите один или несколько образов, указывая их через пробел, на основе приведенной выше информации{CLOSE}\n> {MAGENTA}").split()
         print("\n")
         for part in partitions:
             if part in payload_partitions:
                 extract_payload.run(infile, outdir, part)
     else:
-        print(f"> {YELLOW}提取【{os.path.basename(infile)}】所有镜像文件:{CLOSE}\n")
+        print(f"> {YELLOW}Распаковать【{os.path.basename(infile)}】все образы:{CLOSE}\n")
         extract_payload.main(infile, outdir)
-        j = input('> 是否继续分解img [0/1]: ') == 1
+        j = input('> Разобрать img [0/1]: ') == 1
         if j != 1:
             return
         for img in glob(V.input + '*.img'):
@@ -1082,7 +1082,7 @@ def decompress_win(infile_list):
             continue
         with open(main, "ab" if os.path.exists(main) else "wb") as f:
             with open(i, "rb") as f2:
-                print(f'合并{i}到{main}')
+                print(f'Обьединить{i}в{main}')
                 f.write(f2.read())
             try:
                 os.remove(i)
@@ -1099,7 +1099,7 @@ def decompress_win(infile_list):
         elif tarfile.is_tarfile(i):
             with tarfile.open(i, 'r') as tar:
                 for n in tar.getmembers():
-                    print(f"正在提取:{n.name}")
+                    print(f"Распаковка:{n.name}")
                     tar.extract(n, path=(V.main_dir + os.path.basename(i).rsplit('.', 1)[0]), filter='tar')
             i = os.path.basename(i).rsplit('.', 1)[0]
             fsconfig_0 = []
@@ -1135,7 +1135,7 @@ def decompress_win(infile_list):
                 symlinks_0.sort()
                 appendf("\n".join((str(h) for h in symlinks_0)), "%s_symlinks.txt" % i)
         else:
-            input("未知格式")
+            input("Неизвестный формат")
 
 
 def decompress(infile, flag=4):
@@ -1148,7 +1148,7 @@ def decompress(infile, flag=4):
                 else:
                     transfer = None
             if not V.JM:
-                display(f'是否分解: {os.path.basename(part)} [1/0]: ', 2, '')
+                display(f'Разобрать: {os.path.basename(part)} [1/0]: ', 2, '')
                 if input() != '1':
                     continue
             if flag == 2:
@@ -1161,7 +1161,7 @@ def decompress(infile, flag=4):
         if gettype.gettype(part) not in ('ext', 'sparse', 'erofs', 'super', 'boot', 'vendor_boot'):
             continue
         if not V.JM:
-            display(f'是否分解: {os.path.basename(part)} [1/0]: ', 2, '')
+            display(f'Разобрать: {os.path.basename(part)} [1/0]: ', 2, '')
             if input() != '1':
                 continue
         decompress_img(part, V.main_dir + os.path.basename(part).rsplit('.', 1)[0])
@@ -1191,15 +1191,15 @@ def extract_zrom(rom):
         fantasy_zip = zipfile.ZipFile(rom)
         zip_lists = fantasy_zip.namelist()
     else:
-        input('> 破损的zip或不支持的zip类型')
+        input('> Это не zip архив или данный zip архив не поддерживается')
         return
     if 'payload.bin' in zip_lists:
-        print(f'> 解压缩: {os.path.basename(rom)}')
+        print(f'> Распаковать: {os.path.basename(rom)}')
         envelop_project()
         fantasy_zip.close()
         if os.path.isfile(V.input + 'payload.bin'):
             decompress_bin(fantasy_zip.extract('payload.bin', V.input), V.input,
-                           input(f'> {RED}选择提取方式:  [0]全盘提取  [1]指定镜像{CLOSE} >> '))
+                           input(f'> {RED}Выберите способ извлечения:  [0]Извлечь все  [1]Извлечь конкретный образ{CLOSE} >> '))
             menu_main()
     elif 'run.sh' in zip_lists:
         if not os.path.isdir(MOD_DIR):
@@ -1207,9 +1207,9 @@ def extract_zrom(rom):
         mod_name = os.path.basename(rom).rsplit('.', 1)[0].replace(' ', '_')
         sub_dir = MOD_DIR + 'DNA_' + mod_name
         if not os.path.isdir(sub_dir):
-            display(f'是否安装插件: {mod_name} ? [1/0]: ', 2, '')
+            display(f'Установить плагины: {mod_name} ? [1/0]: ', 2, '')
         else:
-            display(f'已安装插件: {mod_name}，是否删除原插件后安装 ? [0/1]: ', 2, '')
+            display(f'Установленные плагины: {mod_name}，Удалить плагин, чтобы затем установить его снова? [0/1]: ', 2, '')
         if input() == '1':
             rmdire(sub_dir)
             fantasy_zip.extractall(sub_dir)
@@ -1217,14 +1217,14 @@ def extract_zrom(rom):
             if os.path.isfile(sub_dir + os.sep + 'run.sh'):
                 if os.name != 'nt':
                     change_permissions_recursive(sub_dir, 0o777)
-                print('\x1b[1;31m\n 安装完成 !!!\x1b[0m')
+                print('\x1b[1;31m\n Установка завершена !!!\x1b[0m')
             else:
                 rmdire(sub_dir)
-                print('\x1b[1;31m\n 安装失败 !!!\x1b[0m')
+                print('\x1b[1;31m\n Установка не удалась !!!\x1b[0m')
     else:
         able = 5
         infile = []
-        print(f'> 解压缩: {os.path.basename(rom)}')
+        print(f'> Распаковать: {os.path.basename(rom)}')
         envelop_project()
         fantasy_zip.extractall(V.input)
         fantasy_zip.close()
@@ -1238,7 +1238,7 @@ def extract_zrom(rom):
             infile = glob(V.input + '*.img')
             able = 4
         if not infile:
-            input('> 仅支持含有payload.bin/*.new.dat/*.new.dat.br/*.img的zip固件')
+            input('> Поддерживаются только прошивки с payload.bin/*.new.dat/*.new.dat.br/*.img,zip')
         else:
             quiet()
             decompress(infile, able)
@@ -1275,24 +1275,24 @@ def lists_project(dTitle, sPath, flag):
 
     print("\n-------------------------------------------------------")
     if flag == 0:
-        print("\x1b[0;35m  [33] - 解压      [44] - 删除\n  [77] - 设置      [66] - 下载\n  [88] - 退出  \x1b[0m\n")
+        print("\x1b[0;35m  [33] - Разобрать      [44] - Удалить\n  [77] - Установить      [66] - Скачать\n  [88] - Выйти  \x1b[0m\n")
 
     if flag == 2:
-        print("\x1b[0;35m  [33] - 安装         [44] - 删除         [88] - 退出  \x1b[0m\n")
+        print("\x1b[0;35m  [33] - Установить        [44] - Удалить         [88] - Выйти  \x1b[0m\n")
 
 
 def choose_zrom(flag=0):
     os.system('cls' if os.name == 'nt' else 'clear')
     if flag == 1:
-        print('\x1b[0;33m> 选择固件:\x1b[0m')
-        s_file_path = askopenfilename(title='选择一个固件', filetypes=(("zip", "*.zip"),))
+        print('\x1b[0;33m> Выберите прошивку:\x1b[0m')
+        s_file_path = askopenfilename(title='Выбор прошивки', filetypes=(("zip", "*.zip"),))
         if s_file_path:
             extract_zrom(s_file_path)
     else:
-        print('\x1b[0;33m> 固件列表\x1b[0m')
-        print(f"固件放置路径: {ROM_DIR}")
-        lists_project('返回上级', ROM_DIR + '*.zip', 1)
-        choice = input('> 选择: ')
+        print('\x1b[0;33m> Список прошивок\x1b[0m')
+        print(f"Путь размещения прошивки: {ROM_DIR}")
+        lists_project('Вернуться назад', ROM_DIR + '*.zip', 1)
+        choice = input('> Выбор: ')
         if choice:
             if int(choice) == 66:
                 download_zrom()
@@ -1301,7 +1301,7 @@ def choose_zrom(flag=0):
             elif 0 < int(choice) < len(V.dict0):
                 extract_zrom(V.dict0[int(choice)])
             else:
-                input(f'> Number \x1b[0;33m{choice}\x1b[0m enter error !')
+                input(f'> Ощибка \x1b[0;33m{choice}\x1b[0m выберите действие !')
 
 
 def download_rom(rom, url):
@@ -1310,13 +1310,13 @@ def download_rom(rom, url):
     file_size = int(res.headers.get("Content-Length"))
     file_size_in_mb = int(file_size / 1048576)
     com = 0
-    print(f"> {GREEN}D.N.A DOWNLOADER:{CLOSE}\n")
+    print(f"> {GREEN}D.N.A Загрузчик:{CLOSE}\n")
     print(f"Link: {url}")
     print(f"Size: {file_size_in_mb}Mb")
     print(f"Path: {rom}")
     if not os.path.isfile(rom):
         with Progress() as progress:
-            task = progress.add_task("[yellow]Downloading...", total=file_size)
+            task = progress.add_task("[yellow]Загрузка...", total=file_size)
             with open(rom, "wb") as f:
                 for chunk in res.iter_content(2097152):
                     f.write(chunk)
@@ -1324,18 +1324,18 @@ def download_rom(rom, url):
                     progress.update(task, completed=com)
 
         if os.path.exists(rom):
-            print(f"{RED}Successed !{CLOSE}")
+            print(f"{RED}Успешно !{CLOSE}")
             choose_zrom()
         else:
             if os.path.exists(rom):
                 os.remove(rom)
-            input(f"> {GREEN}Failed !{CLOSE}")
+            input(f"> {GREEN}Неудачно !{CLOSE}")
     else:
-        input("> 发现 " + os.path.basename(rom))
+        input("> Выбрать " + os.path.basename(rom))
 
 
 def download_zrom():
-    url = input("> 输入直链: ")
+    url = input("> Введите ссылку: ")
     if url:
         s_file_path = ROM_DIR + url.split("/")[-1]
         if not os.path.isfile(s_file_path):
@@ -1344,8 +1344,8 @@ def download_zrom():
 
 def creat_project():
     os.system("cls" if os.name == "nt" else "clear")
-    print("\x1b[1;31m> 新建工程:\x1b[0m\n")
-    creat_name = input("  输入名称【不能有空格、特殊符号】: DNA_").strip().rstrip("\\").replace(" ", "_")
+    print("\x1b[1;31m> Создать проект:\x1b[0m\n")
+    creat_name = input("  Введите название【без пробелов и специальных символов】: DNA_").strip().rstrip("\\").replace(" ", "_")
     if creat_name:
         V.project = "DNA_" + creat_name
         if not os.path.isdir(V.project):
@@ -1353,7 +1353,7 @@ def creat_project():
             envelop_project()
             menu_main()
         else:
-            input(f"\x1b[0;31m\n 工程目录< \x1b[0;32m{V.project} \x1b[0;31m>已存在, 回车返回 ...\x1b[0m\n")
+            input(f"\x1b[0;31m\n Папка проекта< \x1b[0;32m{V.project} \x1b[0;31m>уже существует, нажмите Enter, чтобы вернуться ...\x1b[0m\n")
             del V.project
             creat_project()
     else:
@@ -1364,9 +1364,9 @@ def menu_once():
     load_setup_json()
     while True:
         os.system("cls" if os.name == "nt" else "clear")
-        print("\x1b[0;33m> 工程列表\x1b[0m")
-        lists_project("新建工程", "DNA_*", 0)
-        choice = input("> 选择: ")
+        print("\x1b[0;33m> Список проектов\x1b[0m")
+        lists_project("Создать проект", "DNA_*", 0)
+        choice = input("> Выбрать: ")
         if not choice or not choice.isdigit():
             continue
         if int(choice) == 88:
@@ -1375,21 +1375,21 @@ def menu_once():
             choose_zrom(int(os.name == "nt"))
         elif int(choice) == 44:
             if V.dict0:
-                which = input("> 输入序号进行删除: ")
+                which = input("> Введите цифры для удаления: ")
                 if not which.isdigit():
                     continue
                 elif int(which) > 0:
                     if int(which) < len(V.dict0):
                         if input(
-                                f"\x1b[0;31m> 是否删除 \x1b[0;34mNo.{which} \x1b[0;31m工程: \x1b[0;32m{os.path.basename(V.dict0[int(which)])}\x1b[0;31m [0/1]:\x1b[0m ") == "1":
+                                f"\x1b[0;31m> Удалить проект \x1b[0;34mNo.{which} \x1b[0;31m: \x1b[0;32m{os.path.basename(V.dict0[int(which)])}\x1b[0;31m [0/1]:\x1b[0m ") == "1":
                             if os.path.isdir(V.dict0[int(which)]):
                                 rmdire(V.dict0[int(which)])
                                 if IS_ARM64:
                                     if os.path.isdir(ROM_DIR + "D.N.A" + os.sep + V.dict0[int(which)]):
                                         input(
-                                            f"> 请自主判断删除内置存储 {ROM_DIR + 'D.N.A' + os.sep + V.dict0[int(which)]}")
+                                            f"> Пожалуйста, не забудьте очистить папку проекта, если он вам больше не нужен. {ROM_DIR + 'D.N.A' + os.sep + V.dict0[int(which)]}")
                                 menu_once()
-                    input(f"> Number {which} Error !")
+                    input(f"> Ошибка {which} ввода !")
         elif int(choice) == 66:
             download_zrom()
         elif int(choice) == 77:
@@ -1404,27 +1404,27 @@ def menu_once():
             menu_main()
             break
         else:
-            input(f"> Number \x1b[0;33m{choice}\x1b[0m enter error !")
+            input(f"> Ошибка \x1b[0;33m{choice}\x1b[0m при вводе числа !")
 
 
 def menu_more():
     while True:
         os.system("cls" if os.name == "nt" else "clear")
-        print(f"\x1b[1;36m> 当前工程: \x1b[0m{V.project}")
+        print(f"\x1b[1;36m> Текущий проект: \x1b[0m{V.project}")
         print("-------------------------------------------------------\n")
-        print("\x1b[0;31m  0> 返回上级    \x1b[0m")
-        print("\x1b[0;32m  1> 去除AVB    \x1b[0m")
-        print("\x1b[0;34m  2> 去除DM     \x1b[0m")
-        print("\x1b[0;31m  3> [A11+]全局合并dev    \x1b[0m")
-        print("\x1b[0;35m  4> 标准精简    \x1b[0m")
-        print("\x1b[0;32m  5> 添加文件    \x1b[0m")
-        print("\x1b[0;34m  6> 修补boot.img @twrp    \x1b[0m")
-        print("\x1b[0;36m  7> 修补boot.img @magisk    \x1b[0m")
-        print("\x1b[0;33m  8> 合成super.img    \x1b[0m\n")
+        print("\x1b[0;31m  0> Вернуться назад    \x1b[0m")
+        print("\x1b[0;32m  1> Удалить AVB    \x1b[0m")
+        print("\x1b[0;34m  2> Удалить DM     \x1b[0m")
+        print("\x1b[0;31m  3> [A11+]Обьединенить dev    \x1b[0m")
+        print("\x1b[0;35m  4> Стандартная оптимизация    \x1b[0m")
+        print("\x1b[0;32m  5> Добавить файлы    \x1b[0m")
+        print("\x1b[0;34m  6> Патч boot.img @twrp    \x1b[0m")
+        print("\x1b[0;36m  7> Патч boot.img @magisk    \x1b[0m")
+        print("\x1b[0;33m  8> Собрать super.img    \x1b[0m\n")
         print("-------------------------------------------------------")
-        option = input(f"> {RED}输入序号{CLOSE} >> ")
+        option = input(f"> {RED}Введите цифру{CLOSE} >> ")
         if not option.isdigit():
-            input("> 输入序号数字")
+            input("> Введите цифру")
             continue
         if int(option) == 0:
             break
@@ -1445,7 +1445,7 @@ def menu_more():
                     f"{PWD_DIR}local/etc/devices/default/{V.SETUP_MANIFEST['ANDROID_SDK']}/reduce.txt"):
                 reduce_conf = f"{PWD_DIR}local/etc/devices/default/{V.SETUP_MANIFEST['ANDROID_SDK']}/reduce.txt"
             else:
-                input("精简列表<reduce.txt>丢失！")
+                input("Текстовый файл отсутствует<reduce.txt>！")
                 continue
             with CoastTime():
                 for line in open(reduce_conf):
@@ -1474,49 +1474,49 @@ def menu_more():
         elif int(option) == 8:
             repack_super()
         else:
-            input(f"> Number \x1b[0;33m{option}\x1b[0m enter error !")
-        input('> 任意键继续')
+            input(f"> Ошибка \x1b[0;33m{option}\x1b[0m при вводе !")
+        input('> Нажмите любую клавишу чтобы продолжить')
 
 
 def menu_modules():
     while True:
         os.system("cls" if os.name == "nt" else "clear")
-        print("\x1b[0;33m> 插件列表\x1b[0m")
-        lists_project("返回上级", MOD_DIR + "DNA_*", 2)
-        choice = input("> 选择: ")
+        print("\x1b[0;33m> Список плагинов\x1b[0m")
+        lists_project("Вернуться назад", MOD_DIR + "DNA_*", 2)
+        choice = input("> Выбрать: ")
         if not choice.isdigit():
             continue
         if int(choice) == 88:
             sys.exit()
         elif int(choice) == 33:
-            extract_zrom(input("请输入插件路径："))
+            extract_zrom(input("Пожалуйста, введите путь к плагину："))
         elif int(choice) == 44:
             if V.dict0:
-                which = input("> 输入序号进行删除: ")
+                which = input("> Выберите цифру для удаления: ")
                 if int(which) == 0 or not which.isdigit():
                     continue
                 if int(which) <= len(V.dict0):
                     if input(
-                            f"\x1b[0;31m> 是否删除 \x1b[0;34mNo.{which} \x1b[0;31m插件: \x1b[0;32m{os.path.basename(V.dict0[int(which)])}\x1b[0;31m [0/1]:\x1b[0m ") == "1":
+                            f"\x1b[0;31m> Удалить плагин \x1b[0;34mNo.{which} \x1b[0;31m: \x1b[0;32m{os.path.basename(V.dict0[int(which)])}\x1b[0;31m [0/1]:\x1b[0m ") == "1":
                         if os.path.isdir(V.dict0[int(which)]):
                             rmdire(V.dict0[int(which)])
                             continue
                         else:
-                            input(f"> Number {which} Error !")
+                            input(f"> Ошибка {which} ввода !")
         elif int(choice) == 0:
             return
         if 0 < int(choice) < len(V.dict0):
             os.system("cls" if os.name == "nt" else "clear")
-            print(f"\x1b[1;31m> 执行插件:\x1b[0m {os.path.basename(V.dict0[int(choice)])}\n")
+            print(f"\x1b[1;31m> Запустить плагин:\x1b[0m {os.path.basename(V.dict0[int(choice)])}\n")
             if os.path.isfile(shell_sub := (V.dict0[int(choice)] + os.sep + "run.sh")):
                 call(f"busybox bash {shell_sub} {V.main_dir.replace(os.sep, '/')}")
-            input('> 任意键继续')
+            input('> Нажмите любую клавишу чтобы продолжить')
         else:
-            print(f"> Number \x1b[0;33m{choice}\x1b[0m enter error !")
+            print(f"> Ошибка \x1b[0;33m{choice}\x1b[0m при вводе !")
 
 
 def quiet():
-    V.JM = input('> 是否开启静默 [0/1]: ') == '1'
+    V.JM = input('> Включить режим тишины [0/1]: ') == '1'
 
 
 menu_actions = {
@@ -1532,28 +1532,28 @@ menu_actions = {
 def menu_main():
     V.JM = True
     os.system('cls' if os.name == 'nt' else 'clear')
-    print(f'\x1b[1;36m> 当前工程: \x1b[0m{V.project}')
+    print(f'\x1b[1;36m> Текущий проект: \x1b[0m{V.project}')
     print('-------------------------------------------------------\n')
-    print('\x1b[0;31m\t  0> 选择[etc]          1> 分解[bin]\x1b[0m\n')
-    print('\x1b[0;32m\t  2> 分解[bro]          3> 分解[dat]\x1b[0m\n')
-    print('\x1b[0;36m\t  4> 分解[img]          5> 分解[win]\x1b[0m\n')
-    print('\x1b[0;33m\t  6> 更多[dev]          7> 插件[sub]\x1b[0m\n')
-    print('\x1b[0;35m\t  8> 合成[img]          9> 合成[dat]\x1b[0m\n')
-    print('\x1b[0;34m\t  10> 合成[bro]         88> 退出[bye]\x1b[0m\n')
+    print('\x1b[0;31m\t  0> Выбрать[etc]          1> Выбрать[bin]\x1b[0m\n')
+    print('\x1b[0;32m\t  2> Выбрать[bro]          3> Выбрать[dat]\x1b[0m\n')
+    print('\x1b[0;36m\t  4> Выбрать[img]          5> Выбрать[win]\x1b[0m\n')
+    print('\x1b[0;33m\t  6> 更多[dev]              7> Плагины[sub]\x1b[0m\n')
+    print('\x1b[0;35m\t  8> Собрать[img]          9> Собрать[dat]\x1b[0m\n')
+    print('\x1b[0;34m\t  10> Собрать[bro]         88> Выйти[bye]\x1b[0m\n')
     print('-------------------------------------------------------')
-    option = input(f'> {RED}输入序号{CLOSE} >> ')
+    option = input(f'> {RED}Введите цифру{CLOSE} >> ')
     if not option.isdigit():
-        input('> 输入序号数字')
+        input('> Введите цифру')
     else:
         if int(option) in menu_actions.keys():
             menu_actions[int(option)]()
         elif int(option) == 1:
             infile = V.input + 'payload.bin'
             if not os.path.exists(infile):
-                input("未发现Payload.Bin")
+                input("Payload.Bin не найден")
             else:
                 decompress_bin(infile, V.input,
-                               input(f'> {RED}选择提取方式:  [0]全盘提取  [1]指定镜像{CLOSE} >> '))
+                               input(f'> {RED}Выберите способ извлечения:  [0]Извлечь все  [1]Выбрать извлекаемый образ{CLOSE} >> '))
         elif int(option) in [2, 3, 4]:
             quiet()
             decompress(glob(V.input + {2: "*.br", 3: "*.new.dat", 4: "*.img"}[int(option)]), int(option))
@@ -1571,7 +1571,7 @@ def menu_main():
                     source = V.main_dir + f_basename
                     if os.path.isdir(source):
                         if not V.JM:
-                            display(f'是否合成: {f_basename}.img [1/0]: ', end='')
+                            display(f'Собрать: {f_basename}.img [1/0]: ', end='')
                             if input() != '1':
                                 continue
                         boot_utils(source, V.out, 2)
@@ -1595,11 +1595,11 @@ def menu_main():
                     if os.path.isfile(contexts) and os.path.isfile(fsconfig):
                         if not V.JM:
                             txts = {8: "img", 9: "new.dat", 10: "new.dat.br"}
-                            display(f'是否合成: {f_basename}.{txts.get(int(option), ".new.dat.br")} [1/0]: ', end='')
+                            display(f'Собрать: {f_basename}.{txts.get(int(option), ".new.dat.br")} [1/0]: ', end='')
                             if input() != '1':
                                 continue
                         recompress(source, fsconfig, contexts, infojson, int(option))
         else:
-            input(f'\x1b[0;33m{option}\x1b[0m enter error !')
-        input('> 任意键继续')
+            input(f'\x1b[0;33m{option}\x1b[0m ошибка ввода !')
+        input('> Нажмите любую клавишу чтобы продолжить')
     menu_main()
