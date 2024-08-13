@@ -961,12 +961,12 @@ def decompress_img(source, distance, keep=1):
                 print(F'> ..., not support fs_type [{file_type}]')
             distance = V.main_dir + os.path.basename(source).replace('.unsparse.img', '').replace('.img', '')
             if os.path.isdir(distance):
-                if os.path.isdir(V.main_dir + 'config'):
-                    contexts = V.main_dir + 'config' + os.sep + os.path.basename(source).replace(
+                if os.path.isdir(V.config):
+                    contexts = V.config + os.sep + os.path.basename(source).replace(
                         '.unsparse.img',
                         '').replace('.img',
                                     '') + '_file_contexts'
-                    fsconfig = V.main_dir + 'config' + os.sep + os.path.basename(source).replace(
+                    fsconfig = V.config + os.sep + os.path.basename(source).replace(
                         '.unsparse.img',
                         '').replace('.img',
                                     '') + '_fs_config'
@@ -979,10 +979,10 @@ def decompress_img(source, distance, keep=1):
                             '.img', '') + '_fsconfig.txt'
                         shutil.copy(contexts, new_contexts)
                         shutil.copy(fsconfig, new_fsconfig)
-                        shutil.rmtree(V.main_dir + 'config')
+                        shutil.rmtree(V.config)
                     else:
-                        if os.path.isdir(V.main_dir + 'config'):
-                            shutil.rmtree(V.main_dir + 'config')
+                        if os.path.isdir(V.config):
+                            shutil.rmtree(V.config)
 
         if os.path.isdir(distance):
             print('\x1b[1;32m %ds Готово\x1b[0m' % (time.time() - s_time))
@@ -1275,7 +1275,7 @@ def lists_project(dTitle, sPath, flag):
 
     print("\n-------------------------------------------------------")
     if flag == 0:
-        print("\x1b[0;35m  [33] - Разобрать              [44] - Удалить\n  [77] - Настройки программы    [66] - Скачать\n  [88] - Выйти  \x1b[0m\n")
+        print("\x1b[0;35m  [33] - Распаковать[zip-архив]              [44] - Удалить\n  [77] - Настройки программы    [66] - Скачать\n  [88] - Выйти  \x1b[0m\n")
 
     if flag == 2:
         print("\x1b[0;35m  [33] - Установить        [44] - Удалить         [88] - Выйти  \x1b[0m\n")
