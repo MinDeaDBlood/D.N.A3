@@ -241,17 +241,17 @@ def validate_default_env_setup(setup_manifest):
     for k in ('IS_VAB', 'IS_DYNAMIC', 'REPACK_EROFS_IMG', 'REPACK_SPARSE_IMG', 'REPACK_TO_RW',
               'SUPER_SPARSE', 'RESIZE_IMG'):
         if setup_manifest[k] not in ('1', '0'):
-            sys.exit(f"Invalid [{k}] - must be one of <1/0>")
+            sys.exit(f"Неверный [{k}] - должен быть одним из <1/0>")
 
     if setup_manifest["RESIZE_EROFSIMG"] not in ('1', '2', '0'):
-        sys.exit("Invalid [RESIZE_EROFSIMG] - must be one of <1/2/0>")
+        sys.exit("Неверный [RESIZE_EROFSIMG] - должен быть одним из <1/2/0>")
     if not re.match("\\d{1,2}", setup_manifest["ANDROID_SDK"]) or int(setup_manifest["ANDROID_SDK"]) < 5:
-        sys.exit(f"Invalid [ANDROID_SDK : {setup_manifest['ANDROID_SDK']}] - must be one of <5+>")
+        sys.exit(f"Неверный [ANDROID_SDK : {setup_manifest['ANDROID_SDK']}] - должен быть одним из <5+>")
     if not re.match("[0-9]", setup_manifest["REPACK_BR_LEVEL"]):
-        sys.exit(f"Invalid [{setup_manifest['REPACK_BR_LEVEL']}] - must be one of <0-9>")
+        sys.exit(f"Неверный [{setup_manifest['REPACK_BR_LEVEL']}] - должен быть одним из <0-9>")
     if not re.match("\\d{1,3}", setup_manifest["UNPACK_SPLIT_DAT"]):
         sys.exit(
-            f'Invalid ["UNPACK_SPLIT_DAT" : "{setup_manifest["UNPACK_SPLIT_DAT"]}"] - must be one of <1-999>')
+            f'Неверный ["UNPACK_SPLIT_DAT" : "{setup_manifest["UNPACK_SPLIT_DAT"]}"] - должен быть одним из <1-999>')
 
 
 def env_setup():
@@ -271,7 +271,7 @@ def env_setup():
         'Размер супер образа[9126805504]': "SUPER_SIZE",
         'Размер сектора супер образа[2048]': "SUPER_SECTOR",
         'Пользовательская временная метка UTC [в реальном времени]': "UTC",
-        'Разобрать DAT/IMG, который нарезан на  множество частей[15]': "UNPACK_SPLIT_DAT"}
+        'Распаковать DAT/IMG, который нарезан на  множество частей[15]': "UNPACK_SPLIT_DAT"}
     while True:
         os.system('cls' if os.name == 'nt' else "clear")
         print(f"\n> {GREEN}Файл с настройками{CLOSE}: {SETUP_JSON.replace(PWD_DIR, '')}")
@@ -362,7 +362,7 @@ def patch_twrp(BOOTIMG):
                 patch_kernel(BOOTIMG)
 
                 if os.path.isfile("new-boot.img"):
-                    print("+ Done")
+                    print("+ Готово")
                     if not os.path.isdir(V.out):
                         os.mkdir(V.out)
                     new_boot_img_name = f"{os.path.basename(BOOTIMG).split('.')[0]}{os.path.basename(V.out)}_twrp.img"
@@ -397,13 +397,13 @@ def patch_magisk(bootimg):
 
     for k in ('KEEPVERITY', 'KEEPFORCEENCRYPT', 'PATCHVBMETAFLAG', 'IS_64BIT'):
         if magisk_manifest[k] not in ('true', 'false'):
-            sys.exit(f"Invalid [{k}] - must be one of <true/false>")
+            sys.exit(f"Неверный [{k}] - должен быть одним из <true/false>")
 
     if magisk_manifest["CLASS"].lower() not in ('stable', 'alpha', 'canary'):
-        sys.exit("Invalid [CLASS] - must be one of <stable/alpha/canary>")
+        sys.exit("Неверный [CLASS] - должен быть одним из <stable/alpha/canary>")
     if magisk_manifest["TARGET"] not in ('arm', 'arm64', 'armeabi-v7a', 'arm64-v8a',
                                          'x86', 'x86_64'):
-        sys.exit("Invalid [TARGET] - must be one of <arm/x86>")
+        sys.exit("Неверный [TARGET] - должен быть одним из <arm/x86>")
     magisk_files = glob(f"{PWD_DIR}local/etc/magisk/{magisk_manifest['CLASS']}/Magisk-*.apk")
     if not magisk_files:
         input(f"> Не найден файл:local/etc/magisk/{magisk_manifest['CLASS']}/Magisk-*.apk")
@@ -513,7 +513,7 @@ def patch_magisk(bootimg):
 
 def patch_addons():
     if os.path.isdir(f"{PWD_DIR}local/etc/devices/default/{V.SETUP_MANIFEST['ANDROID_SDK']}/addons"):
-        display(f"Копировать {V.SETUP_MANIFEST['ANDROID_SDK']}/* ...")
+        display(f"Копирование {V.SETUP_MANIFEST['ANDROID_SDK']}/* ...")
         try:
             shutil.copytree(os.path.join(PWD_DIR, "local", "etc", "devices", "default", V.SETUP_MANIFEST["ANDROID_SDK"],
                                          "addons"), V.main_dir, dirs_exist_ok=True)
@@ -521,7 +521,7 @@ def patch_addons():
             print("Ошибка при копировании файлов:", e)
     if os.path.isdir(
             f"{PWD_DIR}local/etc/devices/{V.SETUP_MANIFEST['DEVICE_CODE']}/{V.SETUP_MANIFEST['ANDROID_SDK']}/addons"):
-        display(f"Копировать {V.SETUP_MANIFEST['DEVICE_CODE']}/{V.SETUP_MANIFEST['ANDROID_SDK']}/* ...")
+        display(f"Копирование в {V.SETUP_MANIFEST['DEVICE_CODE']}/{V.SETUP_MANIFEST['ANDROID_SDK']}/* ...")
         source_dir = os.path.join(PWD_DIR, "local", "etc", "devices", V.SETUP_MANIFEST["DEVICE_CODE"],
                                   V.SETUP_MANIFEST["ANDROID_SDK"], "addons")
         try:
@@ -742,7 +742,7 @@ def recompress(source, fsconfig, contexts, dumpinfo, flag=8):
                     f_w.write(line)
 
         if flag > 8 or (V.SETUP_MANIFEST["REPACK_SPARSE_IMG"] == "1"):
-            display("Преобразовать: sparse ...")
+            display("Преобразование в sparse...")
             call(f"img2simg {distance} {distance.rsplit('.', 1)[0] + '_sparse.img'}")
             if os.path.exists(distance):
                 try:
@@ -871,24 +871,24 @@ def dboot(infile, dist):
     else:
         os.chdir(infile)
     if call("magiskboot repack %s %s" % (flag, os.path.join(infile, "boot_o.img"))) != 0:
-        print("Pack boot Fail...")
+        print("Упаковка boot завершилась неудачей...")
         return
     else:
         if os.path.exists(os.path.join(dist, os.path.basename(infile) + ".img")):
             os.remove(os.path.join(dist, os.path.basename(infile) + ".img"))
         os.rename(infile + os.sep + "new-boot.img", os.path.join(dist, os.path.basename(infile) + ".img"))
         os.chdir(or_dir)
-        print("Pack Successful...")
+        print("Упаковка успешно завершена...")
 
 
 def boot_utils(source, distance, flag=1):
     if not os.path.isdir(distance):
         os.makedirs(distance)
     if flag == 1:
-        display(f"Разобрать: {os.path.basename(source)}")
+        display(f"Распаковка: {os.path.basename(source)}")
         unpackboot(source, distance)
     elif flag == 2:
-        display(f"Собрать: {os.path.basename(source)}.img")
+        display(f"Упаковка: {os.path.basename(source)}.img")
         dboot(source, distance)
 
 
@@ -915,7 +915,7 @@ def decompress_img(source, distance, keep=1):
             decompress_img(new_source, distance)
     if file_type in ['ext', 'erofs', 'super']:
         if file_type != 'ext':
-            display(f'Разобрать: {os.path.basename(source)} <{file_type}>', 3)
+            display(f'Распаковка: {os.path.basename(source)} <{file_type}>', 3)
         if not os.path.isdir(V.config):
             os.makedirs(V.config)
         if file_type == 'ext':
@@ -952,7 +952,7 @@ def decompress_img(source, distance, keep=1):
                             os.rename(img, new_source)
                         except:
                             ...
-                j = input('> Разобрать img образ [0/1]: ') == 1
+                j = input('> Разобрать img образ? [0/1]: ') == 1
                 if j != 1:
                     return
                 for img in glob(V.input + '*.img'):
@@ -1011,7 +1011,7 @@ def decompress_dat(transfer, source, distance, keep=0):
                     except:
                         ...
 
-    display(f"Разобрать: {os.path.basename(source)} ...", 3)
+    display(f"Распаковка: {os.path.basename(source)} ...", 3)
     sdat2img.main(transfer, source, distance)
     if os.path.isfile(distance):
         tTime = time.time() - sTime
@@ -1030,7 +1030,7 @@ def decompress_dat(transfer, source, distance, keep=0):
 
 def decompress_bro(transfer, source, distance, keep=0):
     s_time = time.time()
-    display(f"Разобрать: {os.path.basename(source)} ...", 3)
+    display(f"Распаковка: {os.path.basename(source)} ...", 3)
     call(f"brotli -df {source} -o {distance}")
     if os.path.isfile(distance):
         print("\x1b[1;32m [%ds]\x1b[0m" % (time.time() - s_time))
@@ -1058,7 +1058,7 @@ def decompress_bin(infile, outdir, flag='1'):
     else:
         print(f"> {YELLOW}Распаковать【{os.path.basename(infile)}】все образы:{CLOSE}\n")
         extract_payload.main(infile, outdir)
-        j = input('> Разобрать img [0/1]: ') == 1
+        j = input('> Разобрать img образ? [0/1]: ') == 1
         if j != 1:
             return
         for img in glob(V.input + '*.img'):
@@ -1148,7 +1148,7 @@ def decompress(infile, flag=4):
                 else:
                     transfer = None
             if not V.JM:
-                display(f'Разобрать: {os.path.basename(part)} [1/0]: ', 2, '')
+                display(f'Разобрать: {os.path.basename(part)}? [1/0]: ', 2, '')
                 if input() != '1':
                     continue
             if flag == 2:
@@ -1161,7 +1161,7 @@ def decompress(infile, flag=4):
         if gettype.gettype(part) not in ('ext', 'sparse', 'erofs', 'super', 'boot', 'vendor_boot'):
             continue
         if not V.JM:
-            display(f'Разобрать: {os.path.basename(part)} [1/0]: ', 2, '')
+            display(f'Разобрать: {os.path.basename(part)}? [1/0]: ', 2, '')
             if input() != '1':
                 continue
         decompress_img(part, V.main_dir + os.path.basename(part).rsplit('.', 1)[0])
@@ -1366,7 +1366,7 @@ def menu_once():
         os.system("cls" if os.name == "nt" else "clear")
         print("\x1b[0;33m> Список проектов\x1b[0m")
         lists_project("Создать проект", "DNA_*", 0)
-        choice = input("> Выбрать: ")
+        choice = input("> Пожалуйста, введите число: ")
         if not choice or not choice.isdigit():
             continue
         if int(choice) == 88:
@@ -1375,7 +1375,7 @@ def menu_once():
             choose_zrom(int(os.name == "nt"))
         elif int(choice) == 44:
             if V.dict0:
-                which = input("> Введите цифры для удаления: ")
+                which = input("> Введите число для удаления: ")
                 if not which.isdigit():
                     continue
                 elif int(which) > 0:
@@ -1422,9 +1422,9 @@ def menu_more():
         print("\x1b[0;36m  7> Патч boot.img @magisk    \x1b[0m")
         print("\x1b[0;33m  8> Собрать super.img    \x1b[0m\n")
         print("-------------------------------------------------------")
-        option = input(f"> {RED}Введите цифру{CLOSE} >> ")
+        option = input(f"> {RED}Пожалуйста, введите число{CLOSE} >> ")
         if not option.isdigit():
-            input("> Введите цифру")
+            input("> Пожалуйста, введите число")
             continue
         if int(option) == 0:
             break
@@ -1445,7 +1445,7 @@ def menu_more():
                     f"{PWD_DIR}local/etc/devices/default/{V.SETUP_MANIFEST['ANDROID_SDK']}/reduce.txt"):
                 reduce_conf = f"{PWD_DIR}local/etc/devices/default/{V.SETUP_MANIFEST['ANDROID_SDK']}/reduce.txt"
             else:
-                input("Текстовый файл отсутствует<reduce.txt>！")
+                input("Текстовый файл <reduce.txt> отсутствует！")
                 continue
             with CoastTime():
                 for line in open(reduce_conf):
@@ -1534,16 +1534,16 @@ def menu_main():
     os.system('cls' if os.name == 'nt' else 'clear')
     print(f'\x1b[1;36m> Текущий проект: \x1b[0m{V.project}')
     print('-------------------------------------------------------\n')
-    print('\x1b[0;31m\t  0> Вернуться на главную[etc]      1> Выбрать[bin]\x1b[0m\n')
-    print('\x1b[0;32m\t  2> Выбрать[bro]                   3> Выбрать[dat]\x1b[0m\n')
-    print('\x1b[0;36m\t  4> Выбрать[img]                   5> Выбрать[win]\x1b[0m\n')
-    print('\x1b[0;33m\t  6> Инструменты[dev]               7> Плагины[sub]\x1b[0m\n')
-    print('\x1b[0;35m\t  8> Собрать[img]                   9> Собрать[dat]\x1b[0m\n')
-    print('\x1b[0;34m\t  10> Собрать[bro]                  88> Выйти[bye]\x1b[0m\n')
+    print('\x1b[0;31m\t  0> Вернуться на главную[Etc]      1> Распаковать[Payload]\x1b[0m\n')
+    print('\x1b[0;32m\t  2> Распаковать[Br]                3> Распаковать[Dat]\x1b[0m\n')
+    print('\x1b[0;36m\t  4> Распаковать[Img]               5> Распаковать[Win]\x1b[0m\n')
+    print('\x1b[0;33m\t  6> Инструменты[Dev]               7> Плагины[Sub]\x1b[0m\n')
+    print('\x1b[0;35m\t  8> Собрать[Img]                   9> Собрать[Dat]\x1b[0m\n')
+    print('\x1b[0;34m\t  10> Собрать[Br]                   88> Выйти[Bye]\x1b[0m\n')
     print('-------------------------------------------------------')
-    option = input(f'> {RED}Введите цифру{CLOSE} >> ')
+    option = input(f'> {RED}Пожалуйста, введите число{CLOSE} >> ')
     if not option.isdigit():
-        input('> Введите цифру')
+        input('> Пожалуйста, введите число')
     else:
         if int(option) in menu_actions.keys():
             menu_actions[int(option)]()
@@ -1571,7 +1571,7 @@ def menu_main():
                     source = V.main_dir + f_basename
                     if os.path.isdir(source):
                         if not V.JM:
-                            display(f'Собрать: {f_basename}.img [1/0]: ', end='')
+                            display(f'Собрать: {f_basename}.img? [1/0]: ', end='')
                             if input() != '1':
                                 continue
                         boot_utils(source, V.out, 2)
@@ -1595,7 +1595,7 @@ def menu_main():
                     if os.path.isfile(contexts) and os.path.isfile(fsconfig):
                         if not V.JM:
                             txts = {8: "img", 9: "new.dat", 10: "new.dat.br"}
-                            display(f'Собрать: {f_basename}.{txts.get(int(option), ".new.dat.br")} [1/0]: ', end='')
+                            display(f'Собрать {f_basename}.{txts.get(int(option), ".new.dat.br")}? [1/0]: ', end='')
                             if input() != '1':
                                 continue
                         recompress(source, fsconfig, contexts, infojson, int(option))
