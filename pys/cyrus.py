@@ -1148,7 +1148,7 @@ def decompress(infile, flag=4):
                 else:
                     transfer = None
             if not V.JM:
-                display(f'Разобрать: {os.path.basename(part)}? [1/0]: ', 2, '')
+                display(f'Распаковать {os.path.basename(part)}? [1/0]: ', 2, '')
                 if input() != '1':
                     continue
             if flag == 2:
@@ -1161,7 +1161,7 @@ def decompress(infile, flag=4):
         if gettype.gettype(part) not in ('ext', 'sparse', 'erofs', 'super', 'boot', 'vendor_boot'):
             continue
         if not V.JM:
-            display(f'Разобрать: {os.path.basename(part)}? [1/0]: ', 2, '')
+            display(f'Распаковать {os.path.basename(part)}? [1/0]: ', 2, '')
             if input() != '1':
                 continue
         decompress_img(part, V.main_dir + os.path.basename(part).rsplit('.', 1)[0])
