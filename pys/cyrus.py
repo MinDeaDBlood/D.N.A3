@@ -675,7 +675,7 @@ def recompress(source, fsconfig, contexts, dumpinfo, flag=8):
     elif V.SETUP_MANIFEST["RESIZE_EROFSIMG"] == "2":
         printinform += "|lz4"
     display(printinform)
-    display(f"Сборка {label}.img ...", 4)
+    display(f"Собираю {label}.img ...", 4)
 
     if V.SETUP_MANIFEST["REPACK_EROFS_IMG"] == "1":
         if call(mkerofs_cmd) != 0:
@@ -756,7 +756,7 @@ def recompress(source, fsconfig, contexts, dumpinfo, flag=8):
                 except Exception as e:
                     print("Ошибка при перемещении файла:", e)
                 if flag > 8:
-                    display(f"Сборка {label}.new.dat ...", 3)
+                    display(f"Собираю {label}.new.dat ...", 3)
                     img2sdat.main(distance, V.out, 4, label)
                     newdat = V.out + label + ".new.dat"
                     if os.path.isfile(newdat):
@@ -764,7 +764,7 @@ def recompress(source, fsconfig, contexts, dumpinfo, flag=8):
                         os.remove(distance)
                         if flag == 10:
                             level = V.SETUP_MANIFEST["REPACK_BR_LEVEL"]
-                            display(f"Сборка {label}.new.dat.br | Level={level} ...", 3)
+                            display(f"Собираю {label}.new.dat.br | Level={level} ...", 3)
                             newdat_brotli = newdat + ".br"
                             call(f"brotli -{level}jfo {newdat_brotli} {newdat}")
                             print(f" {GREEN}Образ собран успешно{CLOSE}" if os.path.isfile(
