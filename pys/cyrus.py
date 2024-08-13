@@ -586,7 +586,7 @@ def repack_super():
         argvs += '--sparse '
     argvs += f'--group {V.SETUP_MANIFEST["GROUP_NAME"]}_a:{V.SETUP_MANIFEST["SUPER_SIZE"]} --group {V.SETUP_MANIFEST["GROUP_NAME"]}_b:{V.SETUP_MANIFEST["SUPER_SIZE"]} --output {V.out + "super.img"} '
     display(
-        f'Собрать: super.img <Size:{V.SETUP_MANIFEST["SUPER_SIZE"]}|Vab:{V.SETUP_MANIFEST["IS_VAB"]}|Sparse:{V.SETUP_MANIFEST["SUPER_SPARSE"]}>')
+        f'Сборка super.img <Size:{V.SETUP_MANIFEST["SUPER_SIZE"]}|Vab:{V.SETUP_MANIFEST["IS_VAB"]}|Sparse:{V.SETUP_MANIFEST["SUPER_SPARSE"]}>')
     display(f"Содержит разделы：{'|'.join(parts)}")
     with CoastTime():
         call(argvs)
@@ -675,7 +675,7 @@ def recompress(source, fsconfig, contexts, dumpinfo, flag=8):
     elif V.SETUP_MANIFEST["RESIZE_EROFSIMG"] == "2":
         printinform += "|lz4"
     display(printinform)
-    display(f"Собрать: {label}.img ...", 4)
+    display(f"Сборка {label}.img ...", 4)
 
     if V.SETUP_MANIFEST["REPACK_EROFS_IMG"] == "1":
         if call(mkerofs_cmd) != 0:
@@ -756,7 +756,7 @@ def recompress(source, fsconfig, contexts, dumpinfo, flag=8):
                 except Exception as e:
                     print("Ошибка при перемещении файла:", e)
                 if flag > 8:
-                    display(f"Собрать: {label}.new.dat ...", 3)
+                    display(f"Сборка {label}.new.dat ...", 3)
                     img2sdat.main(distance, V.out, 4, label)
                     newdat = V.out + label + ".new.dat"
                     if os.path.isfile(newdat):
@@ -764,7 +764,7 @@ def recompress(source, fsconfig, contexts, dumpinfo, flag=8):
                         os.remove(distance)
                         if flag == 10:
                             level = V.SETUP_MANIFEST["REPACK_BR_LEVEL"]
-                            display(f"Собрать: {label}.new.dat.br | Level={level} ...", 3)
+                            display(f"Сборка {label}.new.dat.br | Level={level} ...", 3)
                             newdat_brotli = newdat + ".br"
                             call(f"brotli -{level}jfo {newdat_brotli} {newdat}")
                             print(f" {GREEN}Образ собран успешно{CLOSE}" if os.path.isfile(
